@@ -49,10 +49,10 @@ class Parser:
             return LiteralExpression(None)
 
         if self._match(TokenType.NUMBER):
-            return LiteralExpression(self.tokens[self.current_index].literal)
+            return LiteralExpression(self._previous_token().literal)
 
         if self._match(TokenType.STRING):
-            return LiteralExpression(self.tokens[self.current_index].literal)
+            return LiteralExpression(self._previous_token().literal)
 
         if self._match(TokenType.LEFT_PAREN):
             expression = self._parse_expression()
@@ -74,3 +74,6 @@ class Parser:
             return self.tokens[self.current_index - 1]
 
         raise Exception(error_message)
+
+    def _previous_token(self) -> Token:
+        return self.tokens[self.current_index - 1]
