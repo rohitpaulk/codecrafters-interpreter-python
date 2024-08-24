@@ -1,4 +1,9 @@
-from app.parser import Expression, GroupingExpression, LiteralExpression
+from app.parser import (
+    Expression,
+    GroupingExpression,
+    LiteralExpression,
+    UnaryExpression,
+)
 
 
 class AstPrinter:
@@ -17,3 +22,6 @@ class AstPrinter:
             return "true" if expression.value else "false"
         else:
             return "nil"
+
+    def visitUnaryExpression(self, expression: UnaryExpression):
+        return f"({expression.operator.lexeme} {self.print(expression.operand)})"

@@ -1,4 +1,3 @@
-import sys
 from app.token import Token, TokenType
 
 
@@ -27,6 +26,18 @@ class GroupingExpression(Expression):
         return visitor.visitGroupingExpression(self)
 
 
+class UnaryExpression(Expression):
+    operator: Token
+    operand: Expression
+
+    def __init__(self, operator: Token, operand: Expression):
+        self.operator = operator
+        self.operand = operand
+
+    def accept(self, visitor):
+        return visitor.visitUnaryExpression(self)
+
+
 class ParseError(Exception):
     pass
 
@@ -41,6 +52,15 @@ class Parser:
         return self._parse_expression()
 
     def _parse_expression(self) -> Expression:
+        # TODO: Change this as higher-precedence rules are added
+        return self._parse_unary()
+
+    def _parse_unary(self) -> Expression:
+        if self._match(TokenType.BANG) or self._match(TokenType.MINUS):
+            operator = self._previous_token()
+            operand = self._parse_expression()
+            return UnaryExpression(operator, operand)
+
         return self._parse_primary()
 
     def _parse_primary(self) -> Expression:
