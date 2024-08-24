@@ -4,7 +4,9 @@ from typing import Optional
 
 class TokenType(StrEnum):
     EOF = "EOF"
+    LEFT_BRACE = "LEFT_BRACE"
     LEFT_PAREN = "LEFT_PAREN"
+    RIGHT_BRACE = "RIGHT_BRACE"
     RIGHT_PAREN = "RIGHT_PAREN"
 
 

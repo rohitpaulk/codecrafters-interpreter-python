@@ -30,8 +30,14 @@ class Scanner:
                 self._add_token(TokenType.LEFT_PAREN)
             case ")":
                 self._add_token(TokenType.RIGHT_PAREN)
+            case "{":
+                self._add_token(TokenType.LEFT_BRACE)
+            case "}":
+                self._add_token(TokenType.RIGHT_BRACE)
             case unknown_character:
-                raise NotImplementedError(f"Unknown character {unknown_character}")
+                raise NotImplementedError(
+                    f"Unknown character {repr(unknown_character)}"
+                )
 
     def _add_token(self, type: TokenType, literal: str | int | None = None):
         self.tokens.append(
