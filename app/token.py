@@ -3,11 +3,17 @@ from typing import Optional
 
 
 class TokenType(StrEnum):
+    COMMA = "COMMA"
+    DOT = "DOT"
     EOF = "EOF"
     LEFT_BRACE = "LEFT_BRACE"
     LEFT_PAREN = "LEFT_PAREN"
+    MINUS = "MINUS"
+    PLUS = "PLUS"
     RIGHT_BRACE = "RIGHT_BRACE"
     RIGHT_PAREN = "RIGHT_PAREN"
+    SEMICOLON = "SEMICOLON"
+    STAR = "STAR"
 
 
 class Token:

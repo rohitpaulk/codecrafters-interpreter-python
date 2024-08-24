@@ -26,14 +26,26 @@ class Scanner:
 
     def scan_token(self):
         match self._consume_char():
+            case ",":
+                self._add_token(TokenType.COMMA)
+            case ".":
+                self._add_token(TokenType.DOT)
             case "(":
                 self._add_token(TokenType.LEFT_PAREN)
-            case ")":
-                self._add_token(TokenType.RIGHT_PAREN)
             case "{":
                 self._add_token(TokenType.LEFT_BRACE)
+            case "-":
+                self._add_token(TokenType.MINUS)
+            case "+":
+                self._add_token(TokenType.PLUS)
+            case ")":
+                self._add_token(TokenType.RIGHT_PAREN)
             case "}":
                 self._add_token(TokenType.RIGHT_BRACE)
+            case ";":
+                self._add_token(TokenType.SEMICOLON)
+            case "*":
+                self._add_token(TokenType.STAR)
             case unknown_character:
                 raise NotImplementedError(
                     f"Unknown character {repr(unknown_character)}"
