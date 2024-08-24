@@ -1,3 +1,4 @@
+from typing import Callable
 from .token import Token, TokenType
 import sys
 
@@ -50,28 +51,28 @@ class Scanner:
             case "*":
                 self._add_token(TokenType.STAR)
             case "=":
-                if self._consume_char_if("="):
+                if self._consume_char_if_char_is("="):
                     self._add_token(TokenType.EQUAL_EQUAL)
                 else:
                     self._add_token(TokenType.EQUAL)
             case "!":
-                if self._consume_char_if("="):
+                if self._consume_char_if_char_is("="):
                     self._add_token(TokenType.BANG_EQUAL)
                 else:
                     self._add_token(TokenType.BANG)
             case "<":
-                if self._consume_char_if("="):
+                if self._consume_char_if_char_is("="):
                     self._add_token(TokenType.LESS_EQUAL)
                 else:
                     self._add_token(TokenType.LESS)
             case ">":
-                if self._consume_char_if("="):
+                if self._consume_char_if_char_is("="):
                     self._add_token(TokenType.GREATER_EQUAL)
                 else:
                     self._add_token(TokenType.GREATER)
             case "/":
-                if self._consume_char_if("/"):
-                    self._consume_chars_until("\n")
+                if self._consume_char_if_char_is("/"):
+                    self._consume_chars_until_char("\n")
                 else:
                     self._add_token(TokenType.SLASH)
             case " " | "\t":
@@ -79,16 +80,13 @@ class Scanner:
             case "\n":
                 self.current_line += 1
             case '"':
-                string_contents = self._consume_chars_until('"')
+                self._scan_string()
+            case initial_char if initial_char.isdigit():
+                self._scan_number(initial_char)
+            case unexpected_char:
+                self._report_error(f"Unexpected character: {unexpected_char}")
 
-                if not self._consume_char_if('"'):
-                    self._report_error("Unterminated string.")
-                else:
-                    self._add_token(TokenType.STRING, string_contents)
-            case char:
-                self._report_error(f"Unexpected character: {char}")
-
-    def _add_token(self, type: TokenType, literal: str | int | None = None):
+    def _add_token(self, type: TokenType, literal: str | float | None = None):
         self.tokens.append(
             Token(
                 type,
@@ -102,33 +100,63 @@ class Scanner:
         self.current_index += 1
         return self.source[self.current_index - 1]
 
-    def _consume_char_if(self, char: str) -> bool:
+    def _consume_char_if(self, predicate: Callable[[str], bool]) -> bool:
         if self._is_at_end():
             return False
 
-        if self.source[self.current_index] != char:
+        if not predicate(self.source[self.current_index]):
             return False
 
         self.current_index += 1
         return True
 
-    def _consume_char_unless(self, char: str) -> bool:
+    def _consume_char_if_char_is(self, char: str) -> bool:
+        return self._consume_char_if(lambda c: c == char)
+
+    def _consume_char_unless(self, predicate: Callable[[str], bool]) -> bool:
         if self._is_at_end():
             return False
 
-        if self.source[self.current_index] == char:
+        if predicate(self.source[self.current_index]):
             return False
 
         self.current_index += 1
         return True
 
-    def _consume_chars_until(self, char: str) -> str:
+    def _consume_chars_until_char(self, char: str) -> str:
+        return self._consume_chars_until(lambda c: c == char)
+
+    def _consume_chars_until(self, predicate: Callable[[str], bool]) -> str:
         start_index = self.current_index
 
-        while self._consume_char_unless(char):
+        while self._consume_char_unless(predicate):
             pass
 
         return self.source[start_index : self.current_index]
+
+    def _consume_chars_while(self, predicate: Callable[[str], bool]) -> str:
+        return self._consume_chars_until(lambda c: not predicate(c))
+
+    def _scan_number(self, initial_char: str):
+        initial_digit_chars = initial_char + self._consume_chars_while(
+            lambda c: c.isdigit()
+        )
+
+        if self._consume_char_if_char_is("."):
+            decimal_digit_chars = self._consume_chars_while(lambda c: c.isdigit())
+            number = float(f"{initial_digit_chars}.{decimal_digit_chars}")
+        else:
+            number = float(initial_digit_chars)
+
+        self._add_token(TokenType.NUMBER, number)
+
+    def _scan_string(self):
+        string_contents = self._consume_chars_until_char('"')
+
+        if not self._consume_char_if_char_is('"'):
+            self._report_error("Unterminated string.")
+        else:
+            self._add_token(TokenType.STRING, string_contents)
 
     def _is_at_end(self) -> bool:
         return self.current_index >= len(self.source)

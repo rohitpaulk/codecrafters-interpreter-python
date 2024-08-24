@@ -17,6 +17,7 @@ class TokenType(StrEnum):
     LESS = "LESS"
     LESS_EQUAL = "LESS_EQUAL"
     MINUS = "MINUS"
+    NUMBER = "NUMBER"
     PLUS = "PLUS"
     RIGHT_BRACE = "RIGHT_BRACE"
     RIGHT_PAREN = "RIGHT_PAREN"
@@ -29,14 +30,14 @@ class TokenType(StrEnum):
 class Token:
     type: TokenType
     lexeme: Optional[str]
-    literal: str | int | None
+    literal: str | float | None
     line_number: int
 
     def __init__(
         self,
         type: TokenType,
         lexeme: Optional[str],
-        literal: str | int | None,
+        literal: str | float | None,
         line_number: int,
     ):
         self.type = type
