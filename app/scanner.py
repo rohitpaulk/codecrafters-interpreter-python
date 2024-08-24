@@ -139,6 +139,9 @@ class Scanner:
         while self._consume_char_unless(char):
             pass
 
+        # Consume the char we're looking for too
+        self._consume_char_if(char)
+
         return self.source[start_index : self.current_index]
 
     def _is_at_end(self) -> bool:
