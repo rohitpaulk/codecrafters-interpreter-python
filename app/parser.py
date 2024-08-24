@@ -80,9 +80,5 @@ class Parser:
         else:
             raise ParseError(error_message)
 
-    def _report_error(self, message: str):
-        print(f"Error: {message}", file=sys.stderr)
-        self.has_errors = True
-
     def _previous_token(self) -> Token:
         return self.tokens[self.current_index - 1]
