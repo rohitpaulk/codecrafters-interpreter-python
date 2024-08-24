@@ -1,4 +1,5 @@
-from app.parser import (
+from app.expression import (
+    BinaryExpression,
     Expression,
     GroupingExpression,
     LiteralExpression,
@@ -25,3 +26,6 @@ class AstPrinter:
 
     def visitUnaryExpression(self, expression: UnaryExpression):
         return f"({expression.operator.lexeme} {self.print(expression.operand)})"
+
+    def visitBinaryExpression(self, expression: BinaryExpression):
+        return f"({expression.operator.lexeme} {self.print(expression.left)} {self.print(expression.right)})"

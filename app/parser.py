@@ -1,41 +1,11 @@
+from app.expression import (
+    Expression,
+    LiteralExpression,
+    GroupingExpression,
+    UnaryExpression,
+    BinaryExpression,
+)
 from app.token import Token, TokenType
-
-
-class Expression:
-    def accept(self, visitor):
-        return visitor.visit(self)
-
-
-class LiteralExpression(Expression):
-    value: str | float | bool | None
-
-    def __init__(self, value: str | float | bool | None):
-        self.value = value
-
-    def accept(self, visitor):
-        return visitor.visitLiteralExpression(self)
-
-
-class GroupingExpression(Expression):
-    expression: Expression
-
-    def __init__(self, expression: Expression):
-        self.expression = expression
-
-    def accept(self, visitor):
-        return visitor.visitGroupingExpression(self)
-
-
-class UnaryExpression(Expression):
-    operator: Token
-    operand: Expression
-
-    def __init__(self, operator: Token, operand: Expression):
-        self.operator = operator
-        self.operand = operand
-
-    def accept(self, visitor):
-        return visitor.visitUnaryExpression(self)
 
 
 class ParseError(Exception):
@@ -53,12 +23,22 @@ class Parser:
 
     def _parse_expression(self) -> Expression:
         # TODO: Change this as higher-precedence rules are added
-        return self._parse_unary()
+        return self._parse_factor()
+
+    def _parse_factor(self) -> Expression:
+        expression = self._parse_unary()
+
+        while self._match(TokenType.SLASH) or self._match(TokenType.STAR):
+            operator = self._previous_token()
+            right = self._parse_unary()
+            expression = BinaryExpression(expression, operator, right)
+
+        return expression
 
     def _parse_unary(self) -> Expression:
         if self._match(TokenType.BANG) or self._match(TokenType.MINUS):
             operator = self._previous_token()
-            operand = self._parse_expression()
+            operand = self._parse_unary()
             return UnaryExpression(operator, operand)
 
         return self._parse_primary()
