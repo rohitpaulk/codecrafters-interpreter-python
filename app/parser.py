@@ -1,3 +1,4 @@
+import sys
 from app.token import Token, TokenType
 
 
@@ -56,7 +57,7 @@ class Parser:
 
         if self._match(TokenType.LEFT_PAREN):
             expression = self._parse_expression()
-            self._consume(TokenType.RIGHT_PAREN, "Expected )")
+            self._match_or_report_error(TokenType.RIGHT_PAREN, "Expected )")
             return GroupingExpression(expression)
 
         raise Exception("Expected expression")
@@ -68,12 +69,16 @@ class Parser:
 
         return False
 
-    def _consume(self, type: TokenType, error_message: str) -> Token:
+    def _match_or_report_error(self, type: TokenType, error_message: str):
         if self.tokens[self.current_index].type == type:
             self.current_index += 1
             return self.tokens[self.current_index - 1]
+        else:
+            self._report_error(error_message)
 
-        raise Exception(error_message)
+    def _report_error(self, message: str):
+        print(f"Error: {message}", file=sys.stderr)
+        self.has_errors = True
 
     def _previous_token(self) -> Token:
         return self.tokens[self.current_index - 1]
