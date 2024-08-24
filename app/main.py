@@ -32,8 +32,12 @@ def main():
 
             scanner = Scanner(file_contents)
             tokens = scanner.scan_tokens()
-            expression = Parser(tokens).parse()
+            parser = Parser(tokens)
+            expression = parser.parse()
             print(AstPrinter().print(expression))
+
+            if parser.has_errors:
+                exit(65)
         case _:
             print(f"Unknown command: {command}", file=sys.stderr)
             exit(1)
