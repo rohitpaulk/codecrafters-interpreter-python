@@ -74,6 +74,8 @@ class Scanner:
                     self._consume_chars_until("\n")
                 else:
                     self._add_token(TokenType.SLASH)
+            case " " | "\n" | "\t":
+                pass
             case char:
                 self.has_errors = True
 
