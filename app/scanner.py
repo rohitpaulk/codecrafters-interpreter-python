@@ -49,6 +49,11 @@ class Scanner:
                 self._add_token(TokenType.SEMICOLON)
             case "*":
                 self._add_token(TokenType.STAR)
+            case "=":
+                if self._consume_char_if("="):
+                    self._add_token(TokenType.EQUAL_EQUAL)
+                else:
+                    self._add_token(TokenType.EQUAL)
             case char:
                 self.has_errors = True
 
@@ -70,6 +75,16 @@ class Scanner:
     def _consume_char(self) -> str:
         self.current_index += 1
         return self.source[self.current_index - 1]
+
+    def _consume_char_if(self, char: str) -> bool:
+        if self._is_at_end():
+            return False
+
+        if self.source[self.current_index] != char:
+            return False
+
+        self.current_index += 1
+        return True
 
     def _is_at_end(self) -> bool:
         return self.current_index >= len(self.source)

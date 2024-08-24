@@ -6,6 +6,8 @@ class TokenType(StrEnum):
     COMMA = "COMMA"
     DOT = "DOT"
     EOF = "EOF"
+    EQUAL = "EQUAL"
+    EQUAL_EQUAL = "EQUAL_EQUAL"
     LEFT_BRACE = "LEFT_BRACE"
     LEFT_PAREN = "LEFT_PAREN"
     MINUS = "MINUS"
