@@ -78,6 +78,19 @@ class Scanner:
                 pass
             case "\n":
                 self.current_line += 1
+            case '"':
+                string_contents_with_terminator = self._consume_chars_until('"')
+
+                if not string_contents_with_terminator.endswith('"'):
+                    self.has_errors = True
+                    print(
+                        f"[line {self.current_line}] Error: Unterminated string.",
+                        file=sys.stderr,
+                    )
+                else:
+                    self._add_token(
+                        TokenType.STRING, string_contents_with_terminator[:-1]
+                    )
             case char:
                 self.has_errors = True
 
@@ -120,9 +133,13 @@ class Scanner:
         self.current_index += 1
         return True
 
-    def _consume_chars_until(self, char: str):
+    def _consume_chars_until(self, char: str) -> str:
+        start_index = self.current_index
+
         while self._consume_char_unless(char):
             pass
+
+        return self.source[start_index : self.current_index]
 
     def _is_at_end(self) -> bool:
         return self.current_index >= len(self.source)

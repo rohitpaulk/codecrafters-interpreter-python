@@ -23,6 +23,7 @@ class TokenType(StrEnum):
     SEMICOLON = "SEMICOLON"
     SLASH = "SLASH"
     STAR = "STAR"
+    STRING = "STRING"
 
 
 class Token:
