@@ -83,7 +83,7 @@ class Scanner:
                 self._scan_string()
             case initial_char if initial_char.isdigit():
                 self._scan_number(initial_char)
-            case initial_char if initial_char.isalpha():
+            case initial_char if initial_char.isalpha() or initial_char == "_":
                 self._scan_identifier(initial_char)
             case unexpected_char:
                 self._report_error(f"Unexpected character: {unexpected_char}")
@@ -140,7 +140,7 @@ class Scanner:
         return self._consume_chars_until(lambda c: not predicate(c))
 
     def _scan_identifier(self, initial_char: str):
-        self._consume_chars_while(lambda c: c.isalnum())
+        self._consume_chars_while(lambda c: c.isalnum() or c == "_")
         self._add_token(TokenType.IDENTIFIER)
 
     def _scan_number(self, initial_char: str):
