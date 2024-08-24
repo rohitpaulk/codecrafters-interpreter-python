@@ -141,3 +141,10 @@ class Scanner:
 
     def _is_at_end(self) -> bool:
         return self.current_index >= len(self.source)
+
+    def _report_error(self, message: str):
+        print(
+            f"[line {self.current_line}] Error: {message}",
+            file=sys.stderr,
+        )
+        self.has_errors = True
