@@ -21,6 +21,7 @@ class TokenType(StrEnum):
     RIGHT_BRACE = "RIGHT_BRACE"
     RIGHT_PAREN = "RIGHT_PAREN"
     SEMICOLON = "SEMICOLON"
+    SLASH = "SLASH"
     STAR = "STAR"
 
 

@@ -69,6 +69,11 @@ class Scanner:
                     self._add_token(TokenType.GREATER_EQUAL)
                 else:
                     self._add_token(TokenType.GREATER)
+            case "/":
+                if self._consume_char_if("/"):
+                    self._consume_chars_until("\n")
+                else:
+                    self._add_token(TokenType.SLASH)
             case char:
                 self.has_errors = True
 
@@ -100,6 +105,20 @@ class Scanner:
 
         self.current_index += 1
         return True
+
+    def _consume_char_unless(self, char: str) -> bool:
+        if self._is_at_end():
+            return False
+
+        if self.source[self.current_index] == char:
+            return False
+
+        self.current_index += 1
+        return True
+
+    def _consume_chars_until(self, char: str):
+        while self._consume_char_unless(char):
+            pass
 
     def _is_at_end(self) -> bool:
         return self.current_index >= len(self.source)
