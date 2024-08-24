@@ -54,6 +54,11 @@ class Scanner:
                     self._add_token(TokenType.EQUAL_EQUAL)
                 else:
                     self._add_token(TokenType.EQUAL)
+            case "!":
+                if self._consume_char_if("="):
+                    self._add_token(TokenType.BANG_EQUAL)
+                else:
+                    self._add_token(TokenType.BANG)
             case char:
                 self.has_errors = True
 

@@ -3,6 +3,8 @@ from typing import Optional
 
 
 class TokenType(StrEnum):
+    BANG = "BANG"
+    BANG_EQUAL = "BANG_EQUAL"
     COMMA = "COMMA"
     DOT = "DOT"
     EOF = "EOF"
