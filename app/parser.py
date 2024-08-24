@@ -23,7 +23,17 @@ class Parser:
 
     def _parse_expression(self) -> Expression:
         # TODO: Change this as higher-precedence rules are added
-        return self._parse_factor()
+        return self._parse_term()
+
+    def _parse_term(self) -> Expression:
+        expression = self._parse_factor()
+
+        while self._match(TokenType.MINUS) or self._match(TokenType.PLUS):
+            operator = self._previous_token()
+            right = self._parse_term()
+            expression = BinaryExpression(expression, operator, right)
+
+        return expression
 
     def _parse_factor(self) -> Expression:
         expression = self._parse_unary()
