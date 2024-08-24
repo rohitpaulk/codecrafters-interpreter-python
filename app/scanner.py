@@ -1,5 +1,5 @@
 from typing import Callable
-from .token import Token, TokenType
+from .token import Token, TokenType, RESERVED_KEYWORDS_TO_TOKEN_TYPE_MAP
 import sys
 
 
@@ -84,7 +84,7 @@ class Scanner:
             case initial_char if initial_char.isdigit():
                 self._scan_number(initial_char)
             case initial_char if initial_char.isalpha() or initial_char == "_":
-                self._scan_identifier(initial_char)
+                self._scan_identifier_or_reserved_keyword()
             case unexpected_char:
                 self._report_error(f"Unexpected character: {unexpected_char}")
 
@@ -139,9 +139,14 @@ class Scanner:
     def _consume_chars_while(self, predicate: Callable[[str], bool]) -> str:
         return self._consume_chars_until(lambda c: not predicate(c))
 
-    def _scan_identifier(self, initial_char: str):
+    def _scan_identifier_or_reserved_keyword(self):
         self._consume_chars_while(lambda c: c.isalnum() or c == "_")
-        self._add_token(TokenType.IDENTIFIER)
+        identifier = self.source[self.current_token_start_index : self.current_index]
+
+        if identifier in RESERVED_KEYWORDS_TO_TOKEN_TYPE_MAP:
+            self._add_token(RESERVED_KEYWORDS_TO_TOKEN_TYPE_MAP[identifier])
+        else:
+            self._add_token(TokenType.IDENTIFIER)
 
     def _scan_number(self, initial_char: str):
         initial_digit_chars = initial_char + self._consume_chars_while(

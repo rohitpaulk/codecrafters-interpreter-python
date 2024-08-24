@@ -27,6 +27,44 @@ class TokenType(StrEnum):
     STAR = "STAR"
     STRING = "STRING"
 
+    # Reserved keywords
+    AND = "AND"
+    CLASS = "CLASS"
+    ELSE = "ELSE"
+    FALSE = "FALSE"
+    FOR = "FOR"
+    FUN = "FUN"
+    IF = "IF"
+    NIL = "NIL"
+    OR = "OR"
+    PRINT = "PRINT"
+    RETURN = "RETURN"
+    SUPER = "SUPER"
+    THIS = "THIS"
+    TRUE = "TRUE"
+    VAR = "VAR"
+    WHILE = "WHILE"
+
+
+RESERVED_KEYWORDS_TO_TOKEN_TYPE_MAP = {
+    "and": TokenType.AND,
+    "class": TokenType.CLASS,
+    "else": TokenType.ELSE,
+    "false": TokenType.FALSE,
+    "for": TokenType.FOR,
+    "fun": TokenType.FUN,
+    "if": TokenType.IF,
+    "nil": TokenType.NIL,
+    "or": TokenType.OR,
+    "print": TokenType.PRINT,
+    "return": TokenType.RETURN,
+    "super": TokenType.SUPER,
+    "this": TokenType.THIS,
+    "true": TokenType.TRUE,
+    "var": TokenType.VAR,
+    "while": TokenType.WHILE,
+}
+
 
 class Token:
     type: TokenType
@@ -47,4 +85,4 @@ class Token:
         self.line_number = line_number
 
     def __str__(self) -> str:
-        return f"{self.type} {self.lexeme} {self.literal or 'null'}"
+        return f"{self.type} {self.lexeme} {self.literal if self.literal is not None else 'null'}"
