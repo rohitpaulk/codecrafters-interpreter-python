@@ -35,5 +35,7 @@ class Parser:
             return LiteralExpression(None)
         elif self.tokens[self.current_index].type == TokenType.NUMBER:
             return LiteralExpression(self.tokens[self.current_index].literal)
+        elif self.tokens[self.current_index].type == TokenType.STRING:
+            return LiteralExpression(self.tokens[self.current_index].literal)
         else:
             raise Exception(f"Unexpected token: {self.tokens[self.current_index].type}")
