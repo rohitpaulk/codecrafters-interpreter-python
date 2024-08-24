@@ -82,20 +82,11 @@ class Scanner:
                 string_contents = self._consume_chars_until('"')
 
                 if not self._consume_char_if('"'):
-                    self.has_errors = True
-                    print(
-                        f"[line {self.current_line}] Error: Unterminated string.",
-                        file=sys.stderr,
-                    )
+                    self._report_error("Unterminated string.")
                 else:
                     self._add_token(TokenType.STRING, string_contents)
             case char:
-                self.has_errors = True
-
-                print(
-                    f"[line {self.current_line}] Error: Unexpected character: {char}",
-                    file=sys.stderr,
-                )
+                self._report_error(f"Unexpected character: {char}")
 
     def _add_token(self, type: TokenType, literal: str | int | None = None):
         self.tokens.append(
