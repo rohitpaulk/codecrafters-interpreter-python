@@ -1,5 +1,8 @@
 import sys
 
+from app.ast_printer import AstPrinter
+
+from .parser import Parser
 from .scanner import Scanner
 
 
@@ -11,21 +14,29 @@ def main():
     command = sys.argv[1]
     filename = sys.argv[2]
 
-    if command != "tokenize":
-        print(f"Unknown command: {command}", file=sys.stderr)
-        exit(1)
+    match command:
+        case "tokenize":
+            with open(filename) as file:
+                file_contents = file.read()
 
-    with open(filename) as file:
-        file_contents = file.read()
+            scanner = Scanner(file_contents)
+            tokens = scanner.scan_tokens()
 
-    scanner = Scanner(file_contents)
-    tokens = scanner.scan_tokens()
+            for token in tokens:
+                print(token)
 
-    for token in tokens:
-        print(token)
+            exit(65 if scanner.has_errors else 0)
+        case "parse":
+            with open(filename) as file:
+                file_contents = file.read()
 
-    if scanner.has_errors:
-        exit(65)
+            scanner = Scanner(file_contents)
+            tokens = scanner.scan_tokens()
+            expression = Parser(tokens).parse()
+            print(AstPrinter().print(expression))
+        case _:
+            print(f"Unknown command: {command}", file=sys.stderr)
+            exit(1)
 
 
 if __name__ == "__main__":
