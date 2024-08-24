@@ -27,6 +27,10 @@ class GroupingExpression(Expression):
         return visitor.visitGroupingExpression(self)
 
 
+class ParseError(Exception):
+    pass
+
+
 class Parser:
     def __init__(self, tokens: list[Token]):
         self.tokens = tokens
@@ -57,7 +61,7 @@ class Parser:
 
         if self._match(TokenType.LEFT_PAREN):
             expression = self._parse_expression()
-            self._match_or_report_error(TokenType.RIGHT_PAREN, "Expected )")
+            self._match_or_raise_error(TokenType.RIGHT_PAREN, "Expected )")
             return GroupingExpression(expression)
 
         raise Exception("Expected expression")
@@ -69,12 +73,12 @@ class Parser:
 
         return False
 
-    def _match_or_report_error(self, type: TokenType, error_message: str):
+    def _match_or_raise_error(self, type: TokenType, error_message: str):
         if self.tokens[self.current_index].type == type:
             self.current_index += 1
             return self.tokens[self.current_index - 1]
         else:
-            self._report_error(error_message)
+            raise ParseError(error_message)
 
     def _report_error(self, message: str):
         print(f"Error: {message}", file=sys.stderr)

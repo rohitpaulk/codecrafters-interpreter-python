@@ -2,7 +2,7 @@ import sys
 
 from app.ast_printer import AstPrinter
 
-from .parser import Parser
+from .parser import ParseError, Parser
 from .scanner import Scanner
 
 
@@ -33,11 +33,15 @@ def main():
             scanner = Scanner(file_contents)
             tokens = scanner.scan_tokens()
             parser = Parser(tokens)
-            expression = parser.parse()
-            print(AstPrinter().print(expression))
-
-            if parser.has_errors:
+            try:
+                expression = parser.parse()
+                print(AstPrinter().print(expression))
+            except ParseError:
                 exit(65)
+
+            # TODO: Wire this up when dealing with errors
+            # if parser.has_errors:
+            #     exit(65)
         case _:
             print(f"Unknown command: {command}", file=sys.stderr)
             exit(1)
