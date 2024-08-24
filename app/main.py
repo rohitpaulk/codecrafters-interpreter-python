@@ -24,6 +24,9 @@ def main():
     for token in tokens:
         print(token)
 
+    if scanner.has_errors:
+        exit(65)
+
 
 if __name__ == "__main__":
     main()

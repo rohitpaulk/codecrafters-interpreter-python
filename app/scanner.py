@@ -1,10 +1,12 @@
 from .token import Token, TokenType
+import sys
 
 
 class Scanner:
     current_token_start_index: int
     current_index: int
     current_line: int
+    has_errors: bool
     source: str
     tokens: list[Token]
 
@@ -13,6 +15,7 @@ class Scanner:
         self.current_token_start_index = 0
         self.current_index = 0
         self.current_line = 1
+        self.has_errors = False
         self.tokens = []
 
     def scan_tokens(self) -> list[Token]:
@@ -46,9 +49,12 @@ class Scanner:
                 self._add_token(TokenType.SEMICOLON)
             case "*":
                 self._add_token(TokenType.STAR)
-            case unknown_character:
-                raise NotImplementedError(
-                    f"Unknown character {repr(unknown_character)}"
+            case char:
+                self.has_errors = True
+
+                print(
+                    f"[line {self.current_line}] Error: Unexpected character: {char}",
+                    file=sys.stderr,
                 )
 
     def _add_token(self, type: TokenType, literal: str | int | None = None):
