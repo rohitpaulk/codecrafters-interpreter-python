@@ -7,7 +7,7 @@ class AstPrinter:
 
     def visitLiteralExpression(self, expression: LiteralExpression):
         if isinstance(expression.value, str):
-            return f'"{expression.value}"'
+            return f"{expression.value}"
         elif isinstance(expression.value, float):
             return f"{expression.value}"
         elif isinstance(expression.value, bool):
