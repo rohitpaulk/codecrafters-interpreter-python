@@ -30,7 +30,7 @@ class Parser:
 
         while self._match(TokenType.MINUS) or self._match(TokenType.PLUS):
             operator = self._previous_token()
-            right = self._parse_term()
+            right = self._parse_factor()
             expression = BinaryExpression(expression, operator, right)
 
         return expression
