@@ -1,9 +1,12 @@
-from app.parser import Expression, LiteralExpression
+from app.parser import Expression, GroupingExpression, LiteralExpression
 
 
 class AstPrinter:
     def print(self, expression: Expression):
         return expression.accept(self)
+
+    def visitGroupingExpression(self, expression: GroupingExpression):
+        return f"(group {self.print(expression.expression)})"
 
     def visitLiteralExpression(self, expression: LiteralExpression):
         if isinstance(expression.value, str):

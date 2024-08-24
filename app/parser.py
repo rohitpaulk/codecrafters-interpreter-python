@@ -16,26 +16,61 @@ class LiteralExpression(Expression):
         return visitor.visitLiteralExpression(self)
 
 
+class GroupingExpression(Expression):
+    expression: Expression
+
+    def __init__(self, expression: Expression):
+        self.expression = expression
+
+    def accept(self, visitor):
+        return visitor.visitGroupingExpression(self)
+
+
 class Parser:
     def __init__(self, tokens: list[Token]):
         self.tokens = tokens
-        self.expression_start_index = 0
         self.current_index = 0
         self.has_errors = False
 
     def parse(self) -> Expression:
+        return self._parse_expression()
+
+    def _parse_expression(self) -> Expression:
         return self._parse_primary()
 
     def _parse_primary(self) -> Expression:
-        if self.tokens[self.current_index].type == TokenType.FALSE:
+        if self._match(TokenType.FALSE):
             return LiteralExpression(False)
-        elif self.tokens[self.current_index].type == TokenType.TRUE:
+
+        if self._match(TokenType.TRUE):
             return LiteralExpression(True)
-        elif self.tokens[self.current_index].type == TokenType.NIL:
+
+        if self._match(TokenType.NIL):
             return LiteralExpression(None)
-        elif self.tokens[self.current_index].type == TokenType.NUMBER:
+
+        if self._match(TokenType.NUMBER):
             return LiteralExpression(self.tokens[self.current_index].literal)
-        elif self.tokens[self.current_index].type == TokenType.STRING:
+
+        if self._match(TokenType.STRING):
             return LiteralExpression(self.tokens[self.current_index].literal)
-        else:
-            raise Exception(f"Unexpected token: {self.tokens[self.current_index].type}")
+
+        if self._match(TokenType.LEFT_PAREN):
+            expression = self._parse_expression()
+            self._consume(TokenType.RIGHT_PAREN, "Expected )")
+            return GroupingExpression(expression)
+
+        raise Exception("Expected expression")
+
+    def _match(self, type: TokenType) -> bool:
+        if self.tokens[self.current_index].type == type:
+            self.current_index += 1
+            return True
+
+        return False
+
+    def _consume(self, type: TokenType, error_message: str) -> Token:
+        if self.tokens[self.current_index].type == type:
+            self.current_index += 1
+            return self.tokens[self.current_index - 1]
+
+        raise Exception(error_message)
