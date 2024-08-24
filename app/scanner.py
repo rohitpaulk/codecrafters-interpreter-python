@@ -59,6 +59,16 @@ class Scanner:
                     self._add_token(TokenType.BANG_EQUAL)
                 else:
                     self._add_token(TokenType.BANG)
+            case "<":
+                if self._consume_char_if("="):
+                    self._add_token(TokenType.LESS_EQUAL)
+                else:
+                    self._add_token(TokenType.LESS)
+            case ">":
+                if self._consume_char_if("="):
+                    self._add_token(TokenType.GREATER_EQUAL)
+                else:
+                    self._add_token(TokenType.GREATER)
             case char:
                 self.has_errors = True
 
